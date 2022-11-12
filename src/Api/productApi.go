@@ -5,6 +5,8 @@ import (
 	"crud/src/models"
 	"encoding/json"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func FindAll(response http.ResponseWriter, request *http.Request) {
@@ -16,6 +18,25 @@ func FindAll(response http.ResponseWriter, request *http.Request) {
 			Db: db,
 		}
 		products, err2 := productModel.FindAll()
+		if err2 != nil {
+			respondWithError(response, http.StatusBadRequest, err2.Error())
+		} else {
+			respondWithJson(response, http.StatusOK, products)
+		}
+	}
+}
+
+func Search(response http.ResponseWriter, request *http.Request) {
+	vars := mux.Vars(request)
+	keyword := vars["keyword"]
+	db, err := config.GetDB()
+	if err != nil {
+		respondWithError(response, http.StatusBadRequest, err.Error())
+	} else {
+		productModel := models.ProductModel{
+			Db: db,
+		}
+		products, err2 := productModel.Search(keyword)
 		if err2 != nil {
 			respondWithError(response, http.StatusBadRequest, err2.Error())
 		} else {
