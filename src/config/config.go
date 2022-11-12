@@ -1,12 +1,18 @@
 package config
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
 
-func GetDB(db *sql.DB, err error) {
-	dbDriver := "mysql"
+	_ "github.com/go-sql-driver/mysql"
+)
+
+func GetDB() (db *sql.DB, err error) {
 	dbUser := "root"
 	dbPass := "root"
 	dbName := "dev"
-	db, err := sql.Open(dbDriver, dbUser, ":", dbPass, "@/", dbName)
+	dbQuery := dbUser + ":" + dbPass + "@/" + dbName
+	fmt.Println(dbQuery)
+	db, err = sql.Open("mysql", "root:root@/dev")
 	return
 }
